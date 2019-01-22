@@ -24,7 +24,7 @@ public class RedisTest {
 
     @Test
     public void selectTest(){
-        Employee employee = employeeService.select("lisa");
+        Employee employee = employeeService.select("tudou");
         System.out.println(JSONObject.toJSONString(employee));
     }
 

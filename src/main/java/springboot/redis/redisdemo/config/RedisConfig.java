@@ -4,13 +4,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author: fengyibo
@@ -20,11 +23,15 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 public class RedisConfig {
 
-    @Value("${redis.hostName}")
+
+/*    @Value("${redis.hostName}")
     private String hostName;
 
     @Value("${redis.port}")
-    private Integer port;
+    private Integer port;*/
+
+    @Value("${redis.cluster}")
+    private String cluster;
 
     @Value("${redis.timeout}")
     private Integer timeout;
@@ -81,11 +88,16 @@ public class RedisConfig {
      */
     @Bean(name = "jedisConnectionFactory")
     public JedisConnectionFactory jedisConnectionFactory(@Qualifier("jedisPoolConfig") JedisPoolConfig jedisPoolConfig){
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+/*        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(hostName);
         redisStandaloneConfiguration.setPort(port);
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
-        jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);*/
+
+
+
+        List<String> nodeList = Arrays.asList(cluster.split(","));
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodeList);
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisClusterConfiguration, jedisPoolConfig);
         return jedisConnectionFactory;
     }
 

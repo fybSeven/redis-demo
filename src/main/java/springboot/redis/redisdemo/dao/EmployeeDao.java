@@ -16,6 +16,6 @@ public class EmployeeDao {
 
     public Employee selet(String name){
         LOGGER.info("请求进入数据库##################");
-        return new Employee(name, "杭州", "18298339215", 23, true);
+        return new Employee(name, "兰州", "18298339000", 27, true);
     }
 }
